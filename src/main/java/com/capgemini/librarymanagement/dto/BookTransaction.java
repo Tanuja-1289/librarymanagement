@@ -2,14 +2,27 @@ package com.capgemini.librarymanagement.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+@Entity
+@Table
 public class BookTransaction {
-
+	@Id
+	@Column
 	private int transactionId;
+	@Column
 	private int bookId;
+	@Column
 	private String studentName;
+	@Column
 	private String status;
+	@Column
 	private Date issueDate;
+	@Column
 	private Date dueDate;
+	@Column
 	private int fine;
 	
 	//setters and getters

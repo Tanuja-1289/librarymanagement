@@ -1,11 +1,23 @@
 package com.capgemini.librarymanagement.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
 public class BookInventory {
-	
+	@Id
+	@Column
 	int bookId;
+	@Column
 	String title;
+	@Column
 	String author;
+	@Column
 	String category;
+	@Column
 	int copiesAvailable;
 	
 	//setters and getters

@@ -11,11 +11,11 @@ public interface AdminDao {
 
 	public boolean addLibrarian(String username,String password);
 	public boolean removeLibrarian(String username);
-	public List<Users> showAllLibrarian();
+	public List<String> showAllLibrarian();
 	
 	public boolean addStudent(String username,String password);
 	public boolean removeStudent(String username);
-	public List<Users> showAllStudent();
+	public List<String> showAllStudent();
 	
 	public List<BookInventory> showAllBook();
 	public List<BookRegistration> showAllRegistration();
