@@ -4,34 +4,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidatorImplementation implements Validators{
-	public Integer validateId(String id) {
+	public Boolean validateId(String id) {
 		Pattern pat = Pattern.compile("\\d+");
 		Matcher mat = pat.matcher(id);
 		if(mat.matches()) {
-			return Integer.parseInt(id);
+			return true;
 		}else {
-			return null;
+			return false;
 		}
 	}
 
 	@Override
-	public String validateEmail(String email) {
+	public Boolean validateEmail(String email) {
 		Pattern pat = Pattern.compile("\\w+\\@\\w+\\.\\w+");
 		Matcher mat = pat.matcher(email);
 		if(mat.matches()) {
-			return email;
+			return true;
 		}else {
-			return null;
+			return false;
 		}
 	}
 
-	public String validatePassword(String password) {
+	public Boolean validatePassword(String password) {
 		Pattern pat = Pattern.compile("\\w+\\@\\w+\\.\\w+");
 		Matcher mat = pat.matcher(password);
 		if(mat.matches()) {
-			return password;
+			return true;
 		}else {
-			return null;
+			return false;
 		}
 	}
 }

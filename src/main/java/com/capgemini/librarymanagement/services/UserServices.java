@@ -1,5 +1,7 @@
 package com.capgemini.librarymanagement.services;
 
+import com.capgemini.librarymanagement.dto.Users;
+
 public interface UserServices {
-	public char login(String username,String password);
+	public Users login(String username,String password);
 }

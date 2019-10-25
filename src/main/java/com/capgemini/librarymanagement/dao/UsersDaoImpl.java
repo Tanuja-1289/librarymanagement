@@ -7,7 +7,7 @@ import javax.persistence.Persistence;
 import com.capgemini.librarymanagement.dto.Users;
 
 
-public class UserDaoImpl implements UsersDao {
+public class UsersDaoImpl implements UsersDao {
 
 	@Override
 	public Users login(String username, String password) {

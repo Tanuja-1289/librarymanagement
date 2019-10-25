@@ -1,9 +1,9 @@
 package com.capgemini.librarymanagement.utils;
 
 public interface Validators {
-	public Integer validateId (String id);
-	public String validateEmail (String email);
-	public String validatePassword (String password);
+	public Boolean validateId (String id);
+	public Boolean validateEmail (String email);
+	public Boolean validatePassword (String password);
 
 
 }

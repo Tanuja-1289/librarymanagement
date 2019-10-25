@@ -22,7 +22,7 @@ public class AdminDaoImpl implements AdminDao {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
-			
+
 			transaction.begin();
 			Users librarian = new Users();
 			librarian.setUsername(username);
@@ -32,7 +32,7 @@ public class AdminDaoImpl implements AdminDao {
 			transaction.commit();
 			manager.close();
 			addedLibrarian = true;
-			
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,14 +46,14 @@ public class AdminDaoImpl implements AdminDao {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
-			
+
 			transaction.begin();
 			Users librarian = manager.find(Users.class, username);
 			manager.remove(librarian);
 			transaction.commit();
 			manager.close();
 			removedLibrarian = true;
-			
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,12 +61,12 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	@Override
-	public List<String> showAllLibrarian() {
+	public List<Users> showAllLibrarian() {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "Select username from Users where type='L'";
 		Query query = manager.createQuery(jpql);
-		List<String> librarians = query.getResultList();
+		List<Users> librarians = query.getResultList();
 		manager.close();
 		return librarians;
 	}
@@ -78,7 +78,7 @@ public class AdminDaoImpl implements AdminDao {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
-			
+
 			transaction.begin();
 			Users student = new Users();
 			student.setUsername(username);
@@ -88,7 +88,7 @@ public class AdminDaoImpl implements AdminDao {
 			transaction.commit();
 			manager.close();
 			addedStudent = true;
-			
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -102,14 +102,14 @@ public class AdminDaoImpl implements AdminDao {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
-			
+
 			transaction.begin();
 			Users student = manager.find(Users.class, username);
 			manager.remove(student);
 			transaction.commit();
 			manager.close();
 			removedStudent = true;
-			
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -117,12 +117,12 @@ public class AdminDaoImpl implements AdminDao {
 	}
 
 	@Override
-	public List<String> showAllStudent() {
+	public List<Users> showAllStudent() {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "Select username from Users where type='S'";
 		Query query = manager.createQuery(jpql);
-		List<String> students = query.getResultList();
+		List<Users> students = query.getResultList();
 		manager.close();
 		return students;
 	}
@@ -136,7 +136,7 @@ public class AdminDaoImpl implements AdminDao {
 		List<BookInventory> books = query.getResultList();
 		manager.close();
 		return books;
-		
+
 	}
 
 	@Override
