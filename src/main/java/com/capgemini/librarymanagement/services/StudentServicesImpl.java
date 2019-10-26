@@ -3,12 +3,14 @@ package com.capgemini.librarymanagement.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.StudentDao;
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.utils.ValidatorImplementation;
 
+@Service
 public class StudentServicesImpl implements StudentServices {
 
 	@Autowired

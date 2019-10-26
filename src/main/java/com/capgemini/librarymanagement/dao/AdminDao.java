@@ -17,7 +17,5 @@ public interface AdminDao {
 	public boolean removeStudent(String username);
 	public List<Users> showAllStudent();
 	
-	public List<BookInventory> showAllBook();
-	public List<BookRegistration> showAllRegistration();
-	public List<BookTransaction> showAllTransaction();
+	
 }

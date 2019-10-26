@@ -3,6 +3,7 @@ package com.capgemini.librarymanagement.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.LibrarianDao;
 import com.capgemini.librarymanagement.dto.BookInventory;
@@ -10,6 +11,7 @@ import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.utils.ValidatorImplementation;
 
+@Service
 public class LibrarianServicesImpl implements LibrarianServices{
 
 	@Autowired
@@ -31,13 +33,8 @@ public class LibrarianServicesImpl implements LibrarianServices{
 	}
 
 	@Override
-	public boolean removeBook(String bookId) {
-
-		if(regex.validateId(bookId)) {
-			return true;
-		}else {
-			return false;
-		}
+	public boolean removeBook(int bookId) {
+		return dao.removeBook(bookId);
 	}
 
 	@Override
@@ -65,5 +62,11 @@ public class LibrarianServicesImpl implements LibrarianServices{
 		return dao.returnBook(transactionId);
 	}
 
+	@Override
+	public List<BookInventory> showAllBook() {
+		return dao.showAllBook();
+	}
+
+	
 
 }

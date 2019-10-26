@@ -9,10 +9,13 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.springframework.stereotype.Repository;
+
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
 
+@Repository
 public class LibrarianDaoImpl implements LibrarianDao{
 
 	@Override
@@ -176,4 +179,14 @@ public class LibrarianDaoImpl implements LibrarianDao{
 		return returnedBook;	
 	}
 
+	@Override
+	public List<BookInventory> showAllBook() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+		EntityManager manager = factory.createEntityManager();
+		String jpql= "from BookInventory ";
+		Query query = manager.createQuery(jpql);
+		List<BookInventory> books = query.getResultList();
+		manager.close();
+		return books;
+	}
 }

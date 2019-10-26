@@ -20,4 +20,6 @@ public interface LibrarianDao {
 	public boolean returnBook(int transactionId);
 	
 
+	public List<BookInventory> showAllBook();
+	
 }

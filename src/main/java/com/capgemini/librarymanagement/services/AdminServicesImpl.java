@@ -3,6 +3,7 @@ package com.capgemini.librarymanagement.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.AdminDao;
 import com.capgemini.librarymanagement.dto.BookInventory;
@@ -11,6 +12,7 @@ import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.dto.Users;
 import com.capgemini.librarymanagement.utils.ValidatorImplementation;
 
+@Service
 public class AdminServicesImpl implements AdminServices{
 		
 	@Autowired
@@ -21,12 +23,8 @@ public class AdminServicesImpl implements AdminServices{
 
 	@Override
 	public boolean addLibrarian(String username, String password) {
-
-		if(regex.validatePassword(password)) {
 		return dao.addLibrarian(username, password);
-	}else {
-		return false;
-	}
+	
 }
 
 	@Override
@@ -59,20 +57,7 @@ public class AdminServicesImpl implements AdminServices{
 		return dao.showAllStudent();
 	}
 
-	@Override
-	public List<BookInventory> showAllBook() {
-		return dao.showAllBook();
-	}
-
-	@Override
-	public List<BookRegistration> showAllRegistration() {
-		return  dao.showAllRegistration();
-	}
-
-	@Override
-	public List<BookTransaction> showAllTransaction() {
-		return dao.showAllTransaction();
-	}
+	
 
 	
 }

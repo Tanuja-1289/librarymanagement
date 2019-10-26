@@ -9,7 +9,7 @@ import com.capgemini.librarymanagement.dto.BookTransaction;
 public interface LibrarianServices {
 	public boolean addBook(BookInventory book);
 	public boolean updateBook(BookInventory book);
-	public boolean removeBook(String bookId);
+	public boolean removeBook(int bookId);
 	
 	public List<BookRegistration> showAllRegistration();
 	public boolean cancelRegistration(int registrationId);
@@ -18,4 +18,5 @@ public interface LibrarianServices {
 	public List<BookTransaction> showAllIssued();
 	public boolean returnBook(int transactionId);
 	
+	public List<BookInventory> showAllBook();
 }

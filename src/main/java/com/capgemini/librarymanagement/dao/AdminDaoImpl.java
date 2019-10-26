@@ -8,11 +8,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.springframework.stereotype.Repository;
+
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.dto.Users;
 
+@Repository
 public class AdminDaoImpl implements AdminDao {
 
 	@Override
@@ -127,38 +130,6 @@ public class AdminDaoImpl implements AdminDao {
 		return students;
 	}
 
-	@Override
-	public List<BookInventory> showAllBook() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookInventory ";
-		Query query = manager.createQuery(jpql);
-		List<BookInventory> books = query.getResultList();
-		manager.close();
-		return books;
-
-	}
-
-	@Override
-	public List<BookRegistration> showAllRegistration() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookRegistration ";
-		Query query = manager.createQuery(jpql);
-		List<BookRegistration> registrations = query.getResultList();
-		manager.close();
-		return registrations;
-	}
-
-	@Override
-	public List<BookTransaction> showAllTransaction() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookTransaction ";
-		Query query = manager.createQuery(jpql);
-		List<BookTransaction> transactions = query.getResultList();
-		manager.close();
-		return transactions;
-	}
+	
 
 }
