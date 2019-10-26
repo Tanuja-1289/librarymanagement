@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ValidatorImplementation implements Validators{
-	public Boolean validateId(String id) {
-		Pattern pat = Pattern.compile("\\d+");
-		Matcher mat = pat.matcher(id);
+	
+	public Boolean validatePassword(String password) {
+		Pattern pat = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,7})");
+		Matcher mat = pat.matcher(password);
 		if(mat.matches()) {
 			return true;
 		}else {
@@ -18,19 +19,9 @@ public class ValidatorImplementation implements Validators{
 	}
 
 	@Override
-	public Boolean validateEmail(String email) {
-		Pattern pat = Pattern.compile("\\w+\\@\\w+\\.\\w+");
-		Matcher mat = pat.matcher(email);
-		if(mat.matches()) {
-			return true;
-		}else {
-			return false;
-		}
-	}
-
-	public Boolean validatePassword(String password) {
-		Pattern pat = Pattern.compile("((?=*");
-		Matcher mat = pat.matcher(password);
+	public Boolean validateName(String username) {
+		Pattern pat = Pattern.compile("[a-zA-Z0-9]");
+		Matcher mat = pat.matcher(username);
 		if(mat.matches()) {
 			return true;
 		}else {

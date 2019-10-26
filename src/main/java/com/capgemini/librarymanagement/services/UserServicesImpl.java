@@ -8,7 +8,7 @@ import com.capgemini.librarymanagement.dto.Users;
 import com.capgemini.librarymanagement.utils.ValidatorImplementation;
 
 @Service
-public class UsersServicesImpl implements UserServices{
+public class UserServicesImpl implements UserServices{
 
 	@Autowired
 	UsersDao dao;

@@ -40,7 +40,7 @@ public class AdminServicesImpl implements AdminServices{
 
 	@Override
 	public boolean addStudent(String username, String password) {
-		if(regex.validateId(username) && regex.validatePassword(password)) {
+		if(regex.validateName(username) && regex.validatePassword(password)) {
 			return dao.addStudent(username,password);
 		}else {
 			return false;
