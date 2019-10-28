@@ -1,4 +1,4 @@
-package com.capgemini.librarymanagement.testcases;
+package com.capgemini.librarymanagement;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,19 +6,21 @@ import org.junit.Test;
 
 import com.capgemini.librarymanagement.dao.AdminDaoImpl;
 
-public class AddStudentTestCases {
+public class AddLibrarianTestCases {
 
 	@Test
-	public void addstudentFail() {
+	public void addlibrarianFail() {
 		AdminDaoImpl adminDaoImpl = new AdminDaoImpl();
-		boolean expected = adminDaoImpl.addStudent("bindu", "qwerty");
+		boolean expected = adminDaoImpl.addLibrarian("abc","xyz");
 		assertEquals(expected, false);
 	}
+
 	@Test
-	public void addstudentPass() {
+	public void addlibrarianPass() {
 		AdminDaoImpl adminDaoImpl = new AdminDaoImpl();
-		boolean expected = adminDaoImpl.addStudent("brunda", "brunda");
+		boolean expected = adminDaoImpl.addLibrarian("indhu", "indhu");
 		assertEquals(expected, true);
+
 	}
 
 

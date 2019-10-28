@@ -72,7 +72,7 @@ public class LibrarianController {
 		return librarianServices.showAllBook();
 	}
 	
-	@GetMapping("/librarian.showAllIssued")
+	@GetMapping("/librarian/showAllIssued")
 	public List<BookTransaction> showAllIssued() {
 		return librarianServices.showAllIssued();
 	}
@@ -80,5 +80,51 @@ public class LibrarianController {
 	@GetMapping("/librarian/showAllRegistration")
 	public List<BookRegistration> showAllRegistration() {
 		return librarianServices.showAllRegistration();
+	}
+	
+	@PostMapping("/librarian/issueBook")
+	public ProjectResponse issueBook(int registrationId) {
+		ProjectResponse response = new ProjectResponse();
+		if (librarianServices.issueBook(registrationId)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Book Issued Succesfully");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Book Not Issued Succesfully");
+		}
+		
+		return response;
+	}
+	
+	@PostMapping("/librarian/cancelRegistration")
+	public ProjectResponse cancelRegistration(int registrationId) {
+		ProjectResponse response = new ProjectResponse();
+		if (librarianServices.cancelRegistration(registrationId)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Registration Cancelled Succesfully");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Registration Not Cancelled Succesfully");
+		}
+		return response;
+	}
+	
+	@PostMapping("/librarian/returnBook")
+	public ProjectResponse returnBook(int transactionId) {
+		ProjectResponse response = new ProjectResponse();
+		if (librarianServices.returnBook(transactionId)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Book Returned Succesfully");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Book Not Returned Succesfully");
+		}
+		return response;
 	}
 }

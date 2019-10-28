@@ -1,5 +1,7 @@
 package com.capgemini.librarymanagement.dao;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -7,10 +9,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.capgemini.librarymanagement.common.Common;
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
@@ -18,14 +23,22 @@ import com.capgemini.librarymanagement.dto.BookTransaction;
 @Repository
 public class LibrarianDaoImpl implements LibrarianDao{
 
+	@PersistenceUnit
+	private EntityManagerFactory factory;
+	
+	@Autowired
+	private Common common;
+	
 	@Override
 	public boolean addBook(BookInventory book) {
 		Random random = new Random();
 		boolean addedBook = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
+			
+			book.setBookId(random.nextInt(1000));
+			
 
 			transaction.begin();
 			manager.persist(book);
@@ -44,7 +57,7 @@ public class LibrarianDaoImpl implements LibrarianDao{
 	public boolean updateBook(BookInventory book) {
 		boolean updatedBook = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -54,7 +67,7 @@ public class LibrarianDaoImpl implements LibrarianDao{
 			update.setAuthor(book.getAuthor());
 			update.setCategory(book.getCategory());
 			update.setCopiesAvailable(book.getCopiesAvailable());
-			manager.persist(book);
+			manager.persist(update);
 			transaction.commit();
 			manager.close();
 			updatedBook = true;
@@ -69,7 +82,7 @@ public class LibrarianDaoImpl implements LibrarianDao{
 	public boolean removeBook(int bookId) {
 		boolean removedBook = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -87,7 +100,6 @@ public class LibrarianDaoImpl implements LibrarianDao{
 
 	@Override
 	public List<BookRegistration> showAllRegistration() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "from BookRegistration ";
 		Query query = manager.createQuery(jpql);
@@ -100,7 +112,7 @@ public class LibrarianDaoImpl implements LibrarianDao{
 	public boolean cancelRegistration(int registrationId) {
 		boolean cancelledRegistration = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -131,10 +143,19 @@ public class LibrarianDaoImpl implements LibrarianDao{
 			bookInventory.setCopiesAvailable(bookInventory.getCopiesAvailable()-1);
 			
 			BookTransaction bookTransaction = new BookTransaction();
+			bookTransaction.setTransactionId(random.nextInt(10000));
+			bookTransaction.setStudentName(registration.getStudentName());
+			bookTransaction.setBookId(bookInventory.getBookId());
+			
+			Date issueDate = new Date();
+			bookTransaction.setIssueDate(issueDate );
+			
+			
+			Date dueDate = Date.from(Instant.now().plusSeconds(1209600));
+			bookTransaction.setDueDate(dueDate );
 			bookTransaction.setTransactionId(random.nextInt());
 			bookTransaction.setStudentName(registration.getStudentName());
 			
-			//setting date is pending
 		
 			manager.persist(bookTransaction);
 			manager.persist(bookInventory);
@@ -150,7 +171,6 @@ public class LibrarianDaoImpl implements LibrarianDao{
 
 	@Override
 	public List<BookTransaction> showAllIssued() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "from BookTransaction ";
 		Query query = manager.createQuery(jpql);
@@ -163,12 +183,15 @@ public class LibrarianDaoImpl implements LibrarianDao{
 	public boolean returnBook(int transactionId) {
 		boolean returnedBook = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
 			transaction.begin();
 			BookTransaction bookTransaction = manager.find(BookTransaction.class, transactionId);
+			BookInventory bookInventory = manager.find(BookInventory.class, bookTransaction.getBookId());
+			bookInventory.setCopiesAvailable(bookInventory.getCopiesAvailable()+1);
+			
+			manager.persist(bookInventory);
 			manager.remove(bookTransaction);
 			transaction.commit();
 			manager.close();
@@ -181,12 +204,7 @@ public class LibrarianDaoImpl implements LibrarianDao{
 
 	@Override
 	public List<BookInventory> showAllBook() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookInventory ";
-		Query query = manager.createQuery(jpql);
-		List<BookInventory> books = query.getResultList();
-		manager.close();
-		return books;
+		
+		return common.showAllBook();
 	}
 }

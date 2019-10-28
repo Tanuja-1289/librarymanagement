@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.AdminDao;
-import com.capgemini.librarymanagement.dto.BookInventory;
-import com.capgemini.librarymanagement.dto.BookRegistration;
-import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.dto.Users;
-import com.capgemini.librarymanagement.utils.ValidatorImplementation;
+import com.capgemini.librarymanagement.utils.ValidatorImpl;
 
 @Service
 public class AdminServicesImpl implements AdminServices{
@@ -19,7 +16,7 @@ public class AdminServicesImpl implements AdminServices{
 	AdminDao dao;
 	
 	@Autowired
-	ValidatorImplementation regex;
+	ValidatorImpl regex;
 
 	@Override
 	public boolean addLibrarian(String username, String password) {
@@ -40,11 +37,7 @@ public class AdminServicesImpl implements AdminServices{
 
 	@Override
 	public boolean addStudent(String username, String password) {
-		if(regex.validateName(username) && regex.validatePassword(password)) {
-			return dao.addStudent(username,password);
-		}else {
-			return false;
-		}
+		return dao.addStudent(username,password);
 	}
 
 	@Override

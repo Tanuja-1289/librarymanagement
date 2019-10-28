@@ -9,7 +9,7 @@ import com.capgemini.librarymanagement.dao.LibrarianDao;
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
-import com.capgemini.librarymanagement.utils.ValidatorImplementation;
+import com.capgemini.librarymanagement.utils.ValidatorImpl;
 
 @Service
 public class LibrarianServicesImpl implements LibrarianServices{
@@ -18,7 +18,7 @@ public class LibrarianServicesImpl implements LibrarianServices{
 	LibrarianDao dao;
 
 	@Autowired
-	ValidatorImplementation regex;
+	ValidatorImpl regex;
 
 	@Override
 	public boolean addBook(BookInventory book) {

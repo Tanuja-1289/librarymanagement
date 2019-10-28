@@ -5,20 +5,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.capgemini.librarymanagement.dto.BookInventory;
+import com.capgemini.librarymanagement.dto.BookRegistration;
 
 import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.BookTransaction;
 import com.capgemini.librarymanagement.services.StudentServices;
 import com.capgemini.librarymanagement.utils.ProjectResponse;
 
+@RestController
 public class StudentController {
 	@Autowired
 	private StudentServices studentServices;
 	
 	@GetMapping("/student/searchBook")
-	public BookInventory searchBook(int bookId) {
-		return studentServices.searchBook(bookId) ;
+	public BookInventory searchBook(String title, String author) {
+		return studentServices.searchBook(title, author);
 	}
+	
 	
 	@GetMapping("/student/showAllBook")
 	public List<BookInventory> showAllBook() {
@@ -30,7 +36,7 @@ public class StudentController {
 		return studentServices.showAllBorrowed(studentName);
 	}
 	
-	@PostMapping("/student/requsetBook")
+	@PostMapping("/student/requestBook")
 	public ProjectResponse requestBook(int bookId, String studentName) {
 		ProjectResponse response = new ProjectResponse();
 		if (studentServices.requestBook(bookId, studentName)) {
@@ -45,5 +51,9 @@ public class StudentController {
 		 return response;
 	}
 	
+	@GetMapping("/student/showAllRequested")
+	public List<BookRegistration> showAllRequested(String studentName) {
+		return studentServices.showAllRequested(studentName);
+	}
 	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
@@ -18,11 +19,13 @@ import com.capgemini.librarymanagement.dto.Users;
 @Repository
 public class AdminDaoImpl implements AdminDao {
 
+	@PersistenceUnit
+	private EntityManagerFactory factory;
 	@Override
 	public boolean addLibrarian(String username, String password) {
 		boolean addedLibrarian = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -46,7 +49,7 @@ public class AdminDaoImpl implements AdminDao {
 	public boolean removeLibrarian(String username) {
 		boolean removedLibrarian = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -65,7 +68,7 @@ public class AdminDaoImpl implements AdminDao {
 
 	@Override
 	public List<Users> showAllLibrarian() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+		
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "Select username from Users where type='L'";
 		Query query = manager.createQuery(jpql);
@@ -78,7 +81,7 @@ public class AdminDaoImpl implements AdminDao {
 	public boolean addStudent(String username, String password) {
 		boolean addedStudent = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
+			
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -102,7 +105,6 @@ public class AdminDaoImpl implements AdminDao {
 	public boolean removeStudent(String username) {
 		boolean removedStudent = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 			EntityManager manager = factory.createEntityManager();
 			EntityTransaction transaction = manager.getTransaction();
 
@@ -121,7 +123,6 @@ public class AdminDaoImpl implements AdminDao {
 
 	@Override
 	public List<Users> showAllStudent() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
 		EntityManager manager = factory.createEntityManager();
 		String jpql= "Select username from Users where type='S'";
 		Query query = manager.createQuery(jpql);

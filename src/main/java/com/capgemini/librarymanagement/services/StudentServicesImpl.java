@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.StudentDao;
 import com.capgemini.librarymanagement.dto.BookInventory;
+import com.capgemini.librarymanagement.dto.BookRegistration;
 import com.capgemini.librarymanagement.dto.BookTransaction;
-import com.capgemini.librarymanagement.utils.ValidatorImplementation;
+import com.capgemini.librarymanagement.utils.ValidatorImpl;
 
 @Service
 public class StudentServicesImpl implements StudentServices {
@@ -17,13 +18,9 @@ public class StudentServicesImpl implements StudentServices {
 	StudentDao dao;
 
 	@Autowired
-	ValidatorImplementation regex;
+	ValidatorImpl regex;
 
-	@Override
-	public BookInventory searchBook(int bookId) {
-		return dao.searchBook(bookId);
-	}
-
+	
 	@Override
 	public List<BookInventory> showAllBook() {
 		return dao.showAllBook();
@@ -38,5 +35,16 @@ public class StudentServicesImpl implements StudentServices {
 	public List<BookTransaction> showAllBorrowed(String studentName) {
 		return dao.showAllBorrowed(studentName);
 	}
+	
+	public List<BookRegistration> showAllRequested(String studentName){
+		return dao.showAllRequested(studentName);
+	}
+
+	@Override
+	public BookInventory searchBook(String title, String author) {
+		return dao.searchBook(title, author);
+	}
+
+	
 
 }

@@ -1,4 +1,4 @@
-package com.capgemini.librarymanagement.testcases;
+package com.capgemini.librarymanagement;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,5 +19,5 @@ public class RequestBookTestCases {
 		StudentDaoImpl studentDaoImpl = new StudentDaoImpl();
 		boolean expected = studentDaoImpl.requestBook(101,"sindhu");
 		assertEquals(expected, false);
-	}//not working
+	}
 }

@@ -1,4 +1,4 @@
-package com.capgemini.librarymanagement.testcases;
+package com.capgemini.librarymanagement;
 
 import static org.junit.Assert.assertEquals;
 

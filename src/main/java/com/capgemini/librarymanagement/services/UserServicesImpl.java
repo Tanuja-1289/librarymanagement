@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.librarymanagement.dao.UsersDao;
 import com.capgemini.librarymanagement.dto.Users;
-import com.capgemini.librarymanagement.utils.ValidatorImplementation;
+import com.capgemini.librarymanagement.utils.ValidatorImpl;
 
 @Service
 public class UserServicesImpl implements UserServices{
@@ -14,7 +14,7 @@ public class UserServicesImpl implements UserServices{
 	UsersDao dao;
 
 	@Autowired
-	ValidatorImplementation regex;
+	ValidatorImpl regex;
 
 
 	@Override
