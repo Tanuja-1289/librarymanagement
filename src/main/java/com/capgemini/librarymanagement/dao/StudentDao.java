@@ -2,17 +2,18 @@ package com.capgemini.librarymanagement.dao;
 
 import java.util.List;
 
-import com.capgemini.librarymanagement.dto.BookInventory;
-import com.capgemini.librarymanagement.dto.BookRegistration;
-import com.capgemini.librarymanagement.dto.BookTransaction;
+import com.capgemini.librarymanagement.dto.BooksInventory;
+import com.capgemini.librarymanagement.dto.BooksRegistration;
+import com.capgemini.librarymanagement.dto.BooksTransaction;
 
 public interface StudentDao {
-	
-	public BookInventory searchBook(String  title, String author);
-	public List<BookInventory> showAllBook();
-	
-	public boolean requestBook(int bookId, String studentName);
-	public List<BookTransaction> showAllBorrowed(String studentName);
-	
-	public List<BookRegistration> showAllRequested(String studentName);
+
+	// Student Operations
+	public List<BooksInventory> searchForBook(String bookName);
+	public BooksRegistration makeBookRequest(String bookId);
+	public List<BooksRegistration> getAllRequestedBook();
+	public boolean cancelRequestedBook(int registrationId);
+	public List<BooksTransaction> getResponse();
+	public boolean returnBook(int transactionId);
+
 }

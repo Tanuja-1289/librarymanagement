@@ -3,87 +3,42 @@ package com.capgemini.librarymanagement.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.capgemini.librarymanagement.dto.BookInventory;
 import com.capgemini.librarymanagement.dto.Users;
-import com.capgemini.librarymanagement.services.AdminServices;
-import com.capgemini.librarymanagement.utils.ProjectResponse;
+import com.capgemini.librarymanagement.services.AdminService;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*",allowCredentials = "true")
 @RestController
+@RequestMapping("/admin")
 public class AdminController {
-
 	@Autowired
-	private AdminServices adminServices;
-	
-	@PostMapping("/admin/addLibrarian")
-	public ProjectResponse addLibrarian(String username, String password) {
-		ProjectResponse response = new ProjectResponse();
-		if(adminServices.addLibrarian(username, password)) {
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Librarian Added Succesfully");
-		}else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("Librarian Not Added Succesfully");
-		}
-		return response;
+	private AdminService service;
+
+	@PostMapping("/addLibrarian")
+	public Users addLibrarian(@RequestBody Users librarian) {
+		return service.addLibrarian(librarian);
 	}
-	
-	@PostMapping("/admin/addStudent")
-	public ProjectResponse addStudent(String username, String password) {
-		ProjectResponse response = new ProjectResponse();
-		if(adminServices.addStudent(username, password)) {
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Student Added Succesfully");
-		}else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("Student Not Added Succesfully");
-		}
-		return response;
+	@PutMapping("/updateLibrarian")
+	public Users updateLibrarian(@RequestBody Users librarian) {
+		return service.updateLibrarian(librarian);
 	}
-	
-	@PostMapping("/admin/removeLibrarian")
-	public ProjectResponse removeLibrarian(String username) {
-		ProjectResponse response = new ProjectResponse();
-		if(adminServices.removeLibrarian(username)){
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Librarian Removed Succesfully");
-		}else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("Librarian Not Removed Succesfully");
-		}
-		return response;
+
+	@GetMapping("/searchLibrarian")
+	public List<Users> searchLibrarian() {
+		return service.searchLibrarian();
 	}
-	@PostMapping("/admin/removeStudent")
-	public ProjectResponse removeStudent(String username) {
-		ProjectResponse response = new ProjectResponse();
-		if(adminServices.removeStudent(username)){
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Student Removed Succesfully");
-		}else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("Student Not Removed Succesfully");
-		}
-		return response;
-	}
-	
-	@GetMapping("/admin/showAllLibrarian")
-	public List<Users> showAllLibrarian() {
-		return adminServices.showAllLibrarian();
-	}
-	
-	@GetMapping("/admin/showAllStudent")
-	public List<Users> showAllStudent() {
-		return adminServices.showAllStudent();
+
+	@DeleteMapping("/deleteLibrarian/{id}")
+	public boolean deleteLibrarian(@PathVariable(name = "id") String librarianId) {
+		return service.deleteLibrarian(librarianId);
 	}
 }

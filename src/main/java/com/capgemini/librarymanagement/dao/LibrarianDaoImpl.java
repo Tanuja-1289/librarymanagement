@@ -1,6 +1,6 @@
 package com.capgemini.librarymanagement.dao;
 
-import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -8,203 +8,233 @@ import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.capgemini.librarymanagement.common.Common;
-import com.capgemini.librarymanagement.dto.BookInventory;
-import com.capgemini.librarymanagement.dto.BookRegistration;
-import com.capgemini.librarymanagement.dto.BookTransaction;
+import com.capgemini.librarymanagement.dto.BooksInventory;
+import com.capgemini.librarymanagement.dto.BooksRegistration;
+import com.capgemini.librarymanagement.dto.BooksTransaction;
+import com.capgemini.librarymanagement.dto.Users;
 
 @Repository
-public class LibrarianDaoImpl implements LibrarianDao{
+public class LibrarianDaoImpl implements LibrarianDao {
 
 	@PersistenceUnit
-	private EntityManagerFactory factory;
+	private EntityManagerFactory entityManagerFactory;
 	
-	@Autowired
-	private Common common;
+	private static final String ROLE = "Student";
 	
 	@Override
-	public boolean addBook(BookInventory book) {
-		Random random = new Random();
-		boolean addedBook = false;
+	public BooksInventory addNewBook(BooksInventory booksInventory) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
 		try {
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-			
-			book.setBookId(random.nextInt(1000));
-			
-
 			transaction.begin();
-			manager.persist(book);
+			entityManager.persist(booksInventory);
 			transaction.commit();
-			manager.close();
-			addedBook = true;
-
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return addedBook;
-
-	}
-
-	@Override
-	public boolean updateBook(BookInventory book) {
-		boolean updatedBook = false;
-		try {
-			
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-
-			transaction.begin();
-			BookInventory update = manager.find(BookInventory.class, book.getBookId());
-			update.setTitle(book.getTitle());
-			update.setAuthor(book.getAuthor());
-			update.setCategory(book.getCategory());
-			update.setCopiesAvailable(book.getCopiesAvailable());
-			manager.persist(update);
-			transaction.commit();
-			manager.close();
-			updatedBook = true;
-
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return updatedBook;
-	}
-
-	@Override
-	public boolean removeBook(int bookId) {
-		boolean removedBook = false;
-		try {
-			
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-
-			transaction.begin();
-			BookInventory book = manager.find(BookInventory.class, bookId);
-			manager.remove(book);
-			transaction.commit();
-			manager.close();
-			removedBook = true;
+			entityManager.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			transaction.rollback();
 		}
-		return removedBook;
+		return booksInventory;
 	}
 
 	@Override
-	public List<BookRegistration> showAllRegistration() {
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookRegistration ";
-		Query query = manager.createQuery(jpql);
-		List<BookRegistration> registrations = query.getResultList();
-		manager.close();
-		return registrations;
-	}
-
-	@Override
-	public boolean cancelRegistration(int registrationId) {
-		boolean cancelledRegistration = false;
+	public BooksInventory updateBook(BooksInventory booksInventory) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		BooksInventory selecetdBook = null;
 		try {
-			
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-
 			transaction.begin();
-			BookRegistration registration = manager.find(BookRegistration.class, registrationId);
-			manager.remove(registration);
+			selecetdBook = entityManager.find(BooksInventory.class, booksInventory.getBookId());
+			selecetdBook.setBookName(booksInventory.getBookName());
+			selecetdBook.setfirstAuthor(booksInventory.getfirstAuthor());
+			selecetdBook.setsecondAuthor(booksInventory.getsecondAuthor());
+			selecetdBook.setPublisher(booksInventory.getPublisher());
+			selecetdBook.setYearofpublication(booksInventory.getYearOfPublication());
 			transaction.commit();
-			manager.close();
-			cancelledRegistration = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			transaction.rollback();
 		}
-		return cancelledRegistration;
+		return selecetdBook;
 	}
 
 	@Override
-	public boolean issueBook(int registrationId) {
-		boolean issuedBook = false;
-		Random random = new Random();
+	public boolean deleteBook(String bookId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		boolean deletedBook = false;
 		try {
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-
-			transaction.begin();
-			BookRegistration registration = manager.find(BookRegistration.class, registrationId);
-			BookInventory bookInventory = manager.find(BookInventory.class, registration.getBookId());
-			bookInventory.setCopiesAvailable(bookInventory.getCopiesAvailable()-1);
-			
-			BookTransaction bookTransaction = new BookTransaction();
-			bookTransaction.setTransactionId(random.nextInt(10000));
-			bookTransaction.setStudentName(registration.getStudentName());
-			bookTransaction.setBookId(bookInventory.getBookId());
-			
-			Date issueDate = new Date();
-			bookTransaction.setIssueDate(issueDate );
-			
-			
-			Date dueDate = Date.from(Instant.now().plusSeconds(1209600));
-			bookTransaction.setDueDate(dueDate );
-			bookTransaction.setTransactionId(random.nextInt());
-			bookTransaction.setStudentName(registration.getStudentName());
-			
-		
-			manager.persist(bookTransaction);
-			manager.persist(bookInventory);
-			manager.remove(registration);
-			transaction.commit();
-			manager.close();
-			issuedBook = true;
+			BooksInventory booksInventory = null;
+			booksInventory = entityManager.find(BooksInventory.class, bookId);
+			if (booksInventory != null) {
+				transaction.begin();
+				entityManager.remove(booksInventory);
+				transaction.commit();
+				entityManager.close();
+				deletedBook = true;
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			transaction.rollback();
 		}
-		return issuedBook;	
+		entityManager.close();
+		return deletedBook ;
 	}
 
 	@Override
-	public List<BookTransaction> showAllIssued() {
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookTransaction ";
-		Query query = manager.createQuery(jpql);
-		List<BookTransaction> transactions = query.getResultList();
-		manager.close();
-		return transactions;
-	}
-
-	@Override
-	public boolean returnBook(int transactionId) {
-		boolean returnedBook = false;
+	public List<BooksRegistration> getBookRequest() {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		List<BooksRegistration> registeredBooks = null;
 		try {
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-
 			transaction.begin();
-			BookTransaction bookTransaction = manager.find(BookTransaction.class, transactionId);
-			BookInventory bookInventory = manager.find(BookInventory.class, bookTransaction.getBookId());
-			bookInventory.setCopiesAvailable(bookInventory.getCopiesAvailable()+1);
-			
-			manager.persist(bookInventory);
-			manager.remove(bookTransaction);
+			String jpql = "from BooksRegistration";
+			Query getDetailsQuery = entityManager.createQuery(jpql);
+			registeredBooks = getDetailsQuery.getResultList();
 			transaction.commit();
-			manager.close();
-			returnedBook = true;
+			entityManager.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			transaction.rollback();
 		}
-		return returnedBook;	
+		return registeredBooks;
 	}
 
 	@Override
-	public List<BookInventory> showAllBook() {
-		
-		return common.showAllBook();
+	public boolean cancelBookRequest(int registrationId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		BooksRegistration booksRegistration = entityManager.find(BooksRegistration.class, registrationId);
+		boolean cancelledRequest= false;
+		try {
+			if (booksRegistration != null) {
+				transaction.begin();
+				entityManager.remove(booksRegistration);
+				transaction.commit();
+				entityManager.close();
+				cancelledRequest = true;
+			}
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return cancelledRequest;
+	}
+
+	@Override
+	public Users addNewStudent(Users student) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		try {
+			transaction.begin();
+			if(student.getRole() == null) {
+			student.setRole("Student");
+			entityManager.persist(student);
+			transaction.commit();
+			entityManager.close();
+			}
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return student;
+	}
+
+	@Override
+	public List<Users> searchStudent() {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		List<Users> users = null;
+		try {
+			transaction.begin();
+			
+			String jpql = "from Users where role=: role ";
+			Query searchQuery = entityManager.createQuery(jpql);
+			searchQuery.setParameter("role", ROLE);
+			
+			users = searchQuery.getResultList();
+			
+			entityManager.getTransaction().commit();
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return users;
+	}
+
+	@Override
+	public boolean deleteStudent(String studentId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		boolean deletedStudent = false;
+		try {
+			Users users = null;
+			users = entityManager.find(Users.class, studentId);
+			if (users != null) {
+				transaction.begin();
+				
+				entityManager.remove(users);
+				
+				transaction.commit();
+				entityManager.close();
+				deletedStudent = true;
+			}
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return deletedStudent;
+	}
+
+	@Override
+	public BooksTransaction responseBookRequest(int registrationId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		BooksTransaction booksTransaction = new BooksTransaction();
+		try {
+			transaction.begin();
+			Random random = new Random();
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, 15);
+			Date returnDate = calendar.getTime();
+			BooksRegistration booksRegistration = entityManager.find(BooksRegistration.class, registrationId);
+			
+			booksTransaction.setTransactionId(random.nextInt(1000));
+			booksTransaction.setRegistrationId(registrationId);
+			booksTransaction.setIssueDate(new Date());
+			booksTransaction.setReturnDate(returnDate);
+			booksTransaction.setFine(0);
+			booksTransaction.setStudentId(booksRegistration.getUserId());
+			
+			entityManager.persist(booksTransaction);
+			entityManager.remove(booksRegistration);
+			transaction.commit();
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+
+		return booksTransaction;
+	}
+
+	@Override
+	public Users updateStudent(Users student) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		Users updatedStudent = entityManager.find(Users.class, student.getId());
+		try {
+			transaction.begin();
+			
+			if (updatedStudent != null) {
+				updatedStudent.setId(student.getId());
+				updatedStudent.setName(student.getName());
+				updatedStudent.setEmailId(student.getEmailId());
+				updatedStudent.setPassword(student.getPassword());
+				updatedStudent.setRole(ROLE);
+				transaction.commit();
+				entityManager.close();
+			}
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return updatedStudent;
 	}
 }

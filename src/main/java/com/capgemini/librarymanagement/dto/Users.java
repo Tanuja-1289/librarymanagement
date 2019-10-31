@@ -6,34 +6,58 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table
+@Table(name="Users")
 public class Users {
 	@Id
+	@Column(name="user_id")
+	private String id;
+	@Column(name="user_name")
+	private String name;
 	@Column
-	String username;
+	private String password;
+	@Column(name="email_id")
+	private String emailId;
 	@Column
-	String password;
-	@Column
-	char type;
-	
-	//setters and getters
-	public String getUsername() {
-		return username;
+	private String role;
+
+	public String getId() {
+		return id;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+
+	public void setId(String id) {
+		this.id = id;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public char getType() {
-		return type;
+
+	public String getEmailId() {
+		return emailId;
 	}
-	public void setType(char type) {
-		this.type = type;
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
-	
-}//end class
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+}

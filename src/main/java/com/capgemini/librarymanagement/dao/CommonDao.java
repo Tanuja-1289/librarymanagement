@@ -2,8 +2,8 @@ package com.capgemini.librarymanagement.dao;
 
 import com.capgemini.librarymanagement.dto.Users;
 
-public interface UsersDao {
-	
-	public Users login(String username,String password);
+public interface CommonDao {
 
+	// Login Functionality
+	public Users login(Users user);
 }

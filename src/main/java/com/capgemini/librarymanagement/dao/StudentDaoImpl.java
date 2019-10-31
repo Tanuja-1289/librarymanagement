@@ -10,108 +10,151 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.capgemini.librarymanagement.common.Common;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
-import org.springframework.stereotype.Repository;
-
-import com.capgemini.librarymanagement.dto.BookInventory;
-import com.capgemini.librarymanagement.dto.BookRegistration;
-import com.capgemini.librarymanagement.dto.BookTransaction;
+import com.capgemini.librarymanagement.dto.BooksInventory;
+import com.capgemini.librarymanagement.dto.BooksRegistration;
+import com.capgemini.librarymanagement.dto.BooksTransaction;
 
 @Repository
 public class StudentDaoImpl implements StudentDao {
 
 	@PersistenceUnit
-	private EntityManagerFactory factory;
+	private EntityManagerFactory entityManagerFactory;
 	
-	@Autowired
-	private Common common;
-	
-	
-
 	@Override
-	public List<BookInventory> showAllBook() {
-		return common.showAllBook();
-	}
-
-	@Override
-	public boolean requestBook(int bookId, String studentName) {
-		Random random = new Random();
-		boolean requestedBook = false;
+	public List<BooksInventory> searchForBook(String bookName) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		List<BooksInventory> booksInventory = null;
 		try {
-			
-			EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-			EntityManager manager = factory.createEntityManager();
-			EntityTransaction transaction = manager.getTransaction();
-			BookRegistration registration = new BookRegistration();
 			transaction.begin();
-			registration.setRegistrationId(random.nextInt(100000));
-			registration.setBookId(bookId);
-			registration.setStudentName(studentName);
+			String jpql = "from BooksInventory where bookName=: bookName ";
+			Query searchQuery = entityManager.createQuery(jpql);
+			searchQuery.setParameter("bookName", bookName);
 			
-			Date registrationDate = new Date();
-			
-			registration.setRegistrationDate(registrationDate);
-			
-			manager.persist(registration);
+			booksInventory = searchQuery.getResultList();
 			
 			transaction.commit();
-			manager.close();
-			registration.setRegistrationId(random.nextInt());
-			registration.setBookId(bookId);
-			registration.setStudentName(studentName);
-			
-			//setting date is pending
-			
-			transaction.commit();
-			requestedBook = true;
-		}catch (Exception e) {
-			e.printStackTrace();
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
 		}
-		return requestedBook;
+		return booksInventory;
 	}
 
 	@Override
-	public List<BookTransaction> showAllBorrowed(String studentName) {
-		
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("LibraryPersistence");
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookTransaction where studentName = :name ";
-		Query query = manager.createQuery(jpql);
-		query.setParameter("name", studentName);
-		List<BookTransaction> transactions = query.getResultList();
-		manager.close();
-		return transactions;
+	public BooksRegistration makeBookRequest(String bookId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		BooksRegistration registration = new BooksRegistration();
+		try {
+			transaction.begin();
+			Random random = new Random();
+
+			registration.setRegistrationId(random.nextInt(500));
+			registration.setUserId(CommonDaoImpl.userId);
+			registration.setBookId(bookId);
+			registration.setRegistrationDate(new Date());
+			
+			entityManager.persist(registration);
+			transaction.commit();
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return registration;
 	}
 
 	@Override
-	public List<BookRegistration> showAllRequested(String studentName) {
-		
-		EntityManager manager = factory.createEntityManager();
-		String jpql= "from BookRegistration where studentName = :name ";
-		Query query = manager.createQuery(jpql);
-		query.setParameter("name", studentName);
-		List<BookRegistration> registrations = query.getResultList();
-		manager.close();
-		return registrations;
+	public boolean cancelRequestedBook(int registrationId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		BooksRegistration registration = entityManager.find(BooksRegistration.class, registrationId);
+		boolean cancelledRequest = false;
+		try {
+			if (registration != null) {
+				transaction.begin();
+				entityManager.remove(registration);
+				transaction.commit();
+				entityManager.close();
+				cancelledRequest = true;
+			}
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return cancelledRequest;
 	}
 
 	@Override
-	public BookInventory searchBook(String title, String author) {
-		
-		EntityManager manager = factory.createEntityManager();
-		String jpql = "from BookInventory where title= :bookTitle and author= :bookAuthor";
-		Query query = manager.createQuery(jpql);
-		query.setParameter("bookTitle", title);
-		query.setParameter("bookAuthor", author);
-		BookInventory  search = (BookInventory) query.getSingleResult();
-		manager.close();
-		return search;
+	public List<BooksTransaction> getResponse() {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		List<BooksTransaction> booksTransaction = null;
+		try {
+			transaction.begin();
+			String jpql = "from BooksTransaction where studentId=: studentId";
+			Query getDetailsQuery = entityManager.createQuery(jpql);
+			
+			getDetailsQuery.setParameter("studentId", CommonDaoImpl.userId);
+			booksTransaction = getDetailsQuery.getResultList();
+			transaction.commit();
+			
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return booksTransaction;
+	}
+
+	@Override
+	public List<BooksRegistration> getAllRequestedBook() {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		List<BooksRegistration> registeredBooks = null;
+		try {
+			transaction.begin();
+			String jpql = "from BooksRegistration where userId=: userId ";
+			Query getDetailsQuery = entityManager.createQuery(jpql);
+			getDetailsQuery.setParameter("userId", CommonDaoImpl.userId);
+			registeredBooks = getDetailsQuery.getResultList();
+			transaction.commit();
+			entityManager.close();
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return registeredBooks;
+	}
+
+	@Override
+	public boolean returnBook(int transactionId) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		boolean returnedBook = false;
+		try {
+			transaction.begin();
+			BooksTransaction booksTransaction = null;
+			booksTransaction = entityManager.find(BooksTransaction.class, transactionId);
+			
+			Date returnDate = booksTransaction.getReturnDate();
+			Date todayDate = new Date();
+			
+			long days = (todayDate.getTime() - returnDate.getTime()) / (1000 * 60 * 60 * 24);
+			
+			if (days > 0) {
+				int fine = (int) days * 2;
+				booksTransaction.setFine(fine);
+			} else {
+				booksTransaction.setFine(0);
+			}
+			entityManager.remove(booksTransaction);
+			transaction.commit();
+			entityManager.close();
+			returnedBook = true;
+		} catch (Exception e) {
+			transaction.rollback();
+		}
+		return returnedBook;
 	}
 
 }

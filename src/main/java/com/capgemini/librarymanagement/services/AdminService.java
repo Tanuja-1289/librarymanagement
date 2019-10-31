@@ -1,15 +1,13 @@
-package com.capgemini.librarymanagement.dao;
+package com.capgemini.librarymanagement.services;
 
 import java.util.List;
 
 import com.capgemini.librarymanagement.dto.Users;
 
-public interface AdminDao {
+public interface AdminService {
 
-	//Admin Operations
 	public Users addLibrarian(Users librarian);
 	public Users updateLibrarian(Users librarian);
 	public boolean deleteLibrarian(String librarianId);
 	public List<Users> searchLibrarian();
-
 }

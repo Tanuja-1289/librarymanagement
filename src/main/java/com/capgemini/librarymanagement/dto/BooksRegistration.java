@@ -6,43 +6,50 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 @Entity
-@Table
-public class BookRegistration {
+@Table(name="BooksRegistration")
+public class BooksRegistration {
 	@Id
-	@Column
+	@Column(name="registration_id")
 	private int registrationId;
-	@Column
-	private int bookId;
-	@Column
-	private String studentName;
-	@Column
+	@Column(name="book_id")
+	private String bookId;
+	@Column(name="user_id")
+	private String userId;
+	@Column(name="registrationdate")
 	private Date registrationDate;
-	
-	//setters and getters
-	public int getRegistrationId() {
+
+	public Integer getRegistrationId() {
 		return registrationId;
 	}
-	public void setRegistrationId(int registrationId) {
+
+	public void setRegistrationId(Integer registrationId) {
 		this.registrationId = registrationId;
 	}
-	public int getBookId() {
+
+	public String getBookId() {
 		return bookId;
 	}
-	public void setBookId(int bookId) {
+
+	public void setBookId(String bookId) {
 		this.bookId = bookId;
 	}
-	public String getStudentName() {
-		return studentName;
+
+	public String getUserId() {
+		return userId;
 	}
-	public void setStudentName(String studentName) {
-		this.studentName = studentName;
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
+
 	public Date getRegistrationDate() {
 		return registrationDate;
 	}
+
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-	
-}//end class
+
+}
